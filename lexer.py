@@ -123,6 +123,9 @@ class Lexer:
                 prev_escape = False
                 continue
 
+            if character == "\n":
+                return Token(TokenType.ERROR, "unterminated string literal")
+
             if character == '"':
                 self.index += 1
                 break
