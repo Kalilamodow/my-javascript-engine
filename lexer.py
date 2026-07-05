@@ -15,7 +15,6 @@ class TokenType(Enum):
     RBRACK = "right bracket"
 
     ASSIGN = "assign"
-    EQEQ = "double equals"
     COMMA = "comma"
     COLON = "colon"
 
@@ -24,6 +23,19 @@ class TokenType(Enum):
     DASH = "minus"
     STAR = "times"
     SLASH = "slash"
+
+    INC = "increment"
+    DEC = "decrement"
+
+    EQEQ = "double equals"
+    NEQ = "not equals"
+    GT = "greater"
+    LT = "less"
+    GREQ = "greater or equal"
+    LEEQ = "less or equal"
+    AND = "and"
+    OR = "or"
+    NOT = "not"
 
     STRING = "string"
     NUMBER = "number"
@@ -37,7 +49,7 @@ class Token:
     content: str
 
 
-SPECIAL_CHARS = "!=.;()[]{}+-*/,:"
+SPECIAL_CHARS = "!=.;()[]{}+-*/,:<>&|"
 SPECIAL_CHAR_TOKENS = {
     "=": TokenType.ASSIGN,
     ".": TokenType.DOT,
@@ -53,6 +65,15 @@ SPECIAL_CHAR_TOKENS = {
     "/": TokenType.SLASH,
     ",": TokenType.COMMA,
     ":": TokenType.COLON,
+    ">": TokenType.GT,
+    "<": TokenType.LT,
+    ">=": TokenType.GREQ,
+    "<=": TokenType.LEEQ,
+    "&&": TokenType.AND,
+    "||": TokenType.OR,
+    "!": TokenType.NOT,
+    "++": TokenType.INC,
+    "--": TokenType.DEC,
 }
 
 SPECIAL_CHAR_TOKEN_LIST = list(SPECIAL_CHAR_TOKENS.keys())
