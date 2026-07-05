@@ -40,6 +40,7 @@ class TokenType(Enum):
     STRING = "string"
     NUMBER = "number"
 
+    ERROR = "syntax error"
     EOF = "done"
 
 
@@ -114,7 +115,7 @@ class Lexer:
         while True:
             self.index += 1
             if not self.check_index():
-                return Token(TokenType.EOF, "")
+                return Token(TokenType.ERROR, "unterminated string literal")
 
             character = self.code[self.index]
             if prev_escape:
@@ -139,7 +140,7 @@ class Lexer:
         while character.isnumeric():
             self.index += 1
             if not self.check_index():
-                return Token(TokenType.EOF, "")
+                break
             character = self.code[self.index]
 
         text = self.code[start_pos : self.index]
@@ -148,10 +149,10 @@ class Lexer:
     def next_text(self) -> Token:
         start_pos = self.index
         character = self.code[self.index]
-        while character.isalpha() or character in "_$":
+        while character.isalnum() or character in "_$":
             self.index += 1
             if not self.check_index():
-                return Token(TokenType.EOF, "")
+                break
             character = self.code[self.index]
 
         text = self.code[start_pos : self.index]
@@ -184,9 +185,14 @@ class Lexer:
                 return Token(TokenType.EOF, "")
 
         # possible if for example = got cancelled
-        return Token(SPECIAL_CHAR_TOKENS[text], text)
+        if token := SPECIAL_CHAR_TOKENS[text]:
+            return Token(token, text)
+
+        return Token(TokenType.ERROR, "invalid operation")
 
     def next_whitespace(self):
+        if not self.check_index():
+            return
         character = self.code[self.index]
         while character.isspace():
             self.index += 1
