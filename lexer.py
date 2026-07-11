@@ -3,7 +3,11 @@ from enum import Enum
 
 
 class TokenType(Enum):
-    KEYWD = "keyword"
+    IF = "if"
+    VAR = "var"
+    WHILE = "while"
+    FUNCTION = "function"
+
     IDENT = "identifier"
     SEMI = "semi"
 
@@ -79,7 +83,12 @@ SPECIAL_CHAR_TOKENS = {
 
 SPECIAL_CHAR_TOKEN_LIST = list(SPECIAL_CHAR_TOKENS.keys())
 
-KEYWORDS = ["if", "var", "while", "for", "function"]
+KEYWORDS = {
+    "if": TokenType.IF,
+    "var": TokenType.VAR,
+    "while": TokenType.WHILE,
+    "function": TokenType.FUNCTION,
+}
 
 
 class Lexer:
@@ -161,7 +170,7 @@ class Lexer:
         text = self.code[start_pos : self.index]
 
         return Token(
-            TokenType.KEYWD if text in KEYWORDS else TokenType.IDENT,
+            KEYWORDS.get(text) or TokenType.IDENT,
             text,
         )
 

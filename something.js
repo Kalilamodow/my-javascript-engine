@@ -1,9 +1,7 @@
-function doStuff(a, b) {
-    console.log({ a: a * 2, b: b.repeat(44) });
+var hello = "wrodl";
+
+function dostuff(arg1, arg2) {
+    console.log({ arg1, arg2 });
 }
 
-var a_param = 4;
-var b_param = "sup";
-
-var result = doStuff(a_param, b_param);
-console.log(result);
+dostuff(hello, hello.repeat(2));
