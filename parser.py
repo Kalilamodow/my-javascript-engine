@@ -22,6 +22,15 @@ OPERATORS = {
 }
 
 
+PREFIX_OPS = (
+    TokenType.PLUS,
+    TokenType.DASH,
+    TokenType.NOT,
+    TokenType.INC,
+    TokenType.DEC,
+)
+
+
 class Parser:
     tokens: list[Token]
     cursor: int
@@ -138,11 +147,11 @@ class Parser:
         return expression
 
     def next_multiplication(self) -> ast.Expression:
-        expression = self.next_postfix()
+        expression = self.next_prefix()
 
         while self.peek().type in (TokenType.STAR, TokenType.SLASH):
             operator = self.next_operator()
-            right = self.next_postfix()
+            right = self.next_prefix()
             expression = ast.BinaryExpression(expression, operator, right)
 
         return expression
@@ -153,6 +162,17 @@ class Parser:
         if op is None:
             raise SyntaxError(f"expected operator; got {token}")
         return op
+
+    def next_prefix(self) -> ast.Expression:
+        operator_maybe = self.peek().type
+
+        if operator_maybe not in PREFIX_OPS:
+            return self.next_postfix()
+
+        operator = self.next_operator()
+        expression = self.next_prefix()
+
+        return ast.PrefixExpression(operator, expression)
 
     def next_postfix(self) -> ast.Expression:
         expression = self.next_primary()
@@ -176,6 +196,12 @@ class Parser:
 
                 self.require(TokenType.RPAREN)
                 expression = ast.FunctionCallExpression(expression, fn_args)
+            elif self.peek().type == TokenType.INC:
+                self.require(TokenType.INC)
+                expression = ast.PostfixExpression(ast.Operator.INC, expression)
+            elif self.peek().type == TokenType.DEC:
+                self.require(TokenType.DEC)
+                expression = ast.PostfixExpression(ast.Operator.DEC, expression)
             else:
                 break
 

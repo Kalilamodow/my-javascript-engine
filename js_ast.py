@@ -68,6 +68,18 @@ class FunctionCallExpression(Expression):
     arguments: list[Expression]
 
 
+@dataclass
+class PostfixExpression(Expression):
+    operator: Operator
+    expression: Expression
+
+
+@dataclass
+class PrefixExpression(Expression):
+    operator: Operator
+    expression: Expression
+
+
 class Statement:
     pass
 

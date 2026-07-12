@@ -1,5 +1,6 @@
-var x = 4;
-var t = 9;
+var i = 0;
 
-x.y = t;
-4 = t;
+while (i <= 10) {
+    console.log("i is " + i);
+    i++;
+}
