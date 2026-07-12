@@ -90,7 +90,25 @@ class Parser:
         return ast.VarDeclarationStatement(name, value)
 
     def next_expression(self) -> ast.Expression:
-        return self.next_equality()
+        return self.next_assignment()
+
+    def next_assignment(self) -> ast.Expression:
+        expression = self.next_equality()
+
+        if self.peek().type == TokenType.ASSIGN:
+            if not (
+                isinstance(expression, ast.IdentifierExpression)
+                or isinstance(expression, ast.MemberExpression)
+            ):
+                raise SyntaxError(
+                    f"can't assign to value of type {expression.__class__}"
+                )
+
+            self.require(TokenType.ASSIGN)
+            right = self.next_assignment()
+            expression = ast.AssignmentExpression(expression, right)
+
+        return expression
 
     def next_equality(self) -> ast.Expression:
         expression = self.next_addition()

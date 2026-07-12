@@ -52,7 +52,7 @@ class IdentifierExpression(Expression):
 
 @dataclass
 class AssignmentExpression(Expression):
-    name: str
+    name: Expression
     value: Expression
 
 
