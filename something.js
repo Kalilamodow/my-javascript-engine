@@ -1,6 +1,6 @@
-var i = 0;
+var callMe = function (number) {
+    console.log("calling" + number);
+    callMe("789 10");
+};
 
-while (i <= 10) {
-    console.log("i is " + i);
-    i++;
-}
+callMe("123 456");

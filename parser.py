@@ -66,6 +66,8 @@ class Parser:
             return self.next_if_statement()
         elif token.type is TokenType.WHILE:
             return self.next_while_statement()
+        elif token.type is TokenType.FUNCTION:
+            return self.next_function_statement()
 
         expression = self.next_expression()
         self.require(TokenType.SEMI)
@@ -88,6 +90,25 @@ class Parser:
         block = self.next_block()
 
         return ast.WhileStatement(condition, block)
+
+    def next_function_statement(self) -> ast.FunctionStatement:
+        self.require(TokenType.FUNCTION)
+        name = self.expect(TokenType.IDENT).content
+
+        args: list[str] = []
+        self.require(TokenType.LPAREN)
+
+        while self.peek().type is not TokenType.RPAREN:
+            args.append(self.expect(TokenType.IDENT).content)
+            if self.peek().type is not TokenType.COMMA:
+                break
+            self.advance()
+
+        self.require(TokenType.RPAREN)
+
+        body = self.next_block()
+
+        return ast.FunctionStatement(name, args, body)
 
     def next_var_decl(self) -> ast.VarDeclarationStatement:
         self.require(TokenType.VAR)
@@ -212,14 +233,28 @@ class Parser:
 
         if token.type is TokenType.NUMBER:
             return ast.NumberExpression(float(token.content))
-        elif token.type == TokenType.STRING:
+        elif token.type is TokenType.STRING:
             return ast.StringExpression(token.content)
-        elif token.type == TokenType.LPAREN:
+        elif token.type is TokenType.LPAREN:
             expression = self.next_expression()
             self.require(TokenType.RPAREN)
             return expression
-        elif token.type == TokenType.IDENT:
+        elif token.type is TokenType.IDENT:
             return ast.IdentifierExpression(token.content)
+        elif token.type is TokenType.FUNCTION:
+            name = None
+            if self.peek().type == TokenType.IDENT:
+                name = self.expect(TokenType.IDENT).content
+            args: list[str] = []
+            self.require(TokenType.LPAREN)
+            while self.peek().type is not TokenType.RPAREN:
+                args.append(self.expect(TokenType.IDENT).content)
+                if self.peek().type is not TokenType.COMMA:
+                    break
+                self.advance()
+            self.require(TokenType.RPAREN)
+            body = self.next_block()
+            return ast.FunctionExpression(name, args, body)
 
         raise SyntaxError(f"unexpected token {token.type}")
 

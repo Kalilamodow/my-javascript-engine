@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from enum import Enum
 
@@ -80,6 +82,13 @@ class PrefixExpression(Expression):
     expression: Expression
 
 
+@dataclass
+class FunctionExpression(Expression):
+    name: str | None
+    arguments: list[str]
+    body: Block
+
+
 class Statement:
     pass
 
@@ -104,4 +113,11 @@ class IfStatement(Statement):
 @dataclass
 class WhileStatement(Statement):
     condition: Expression
+    body: Block
+
+
+@dataclass
+class FunctionStatement(Statement):
+    name: str
+    arguments: list[str]
     body: Block

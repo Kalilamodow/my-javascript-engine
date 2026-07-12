@@ -1,4 +1,4 @@
-from pprint import pprint
+import rich
 
 import lexer
 import parser
@@ -13,7 +13,7 @@ def main():
     tokens = lexer.lex(file_content)
 
     print("lexed. parsing...")
-    pprint(parser.parse(tokens))
+    rich.print(parser.parse(tokens))
 
 
 if __name__ == "__main__":
